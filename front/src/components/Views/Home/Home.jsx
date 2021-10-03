@@ -6,6 +6,7 @@ import './Home.scss'
 const Home = () => {
     const [sites, setSites] = useState([]);
     const [page, setPage] = useState(1); // initial page is page 1
+    const [showPage, setShowPage] = useState(true)
     const [ok, setOk] = useState(false);
 
     
@@ -32,6 +33,7 @@ const Home = () => {
         data.forEach((element, index) => {
             array.push(element);
         })
+        console.log(data)
         setSites(array)
         setOk(true)
     }
@@ -56,37 +58,22 @@ const Home = () => {
         }
         return forArray
     }
-    const nextPage = () => {
-        let pageTmp = page;
-        pageTmp++
-        setPage(pageTmp);
-        const element = document.getElementById("showpage");
-        const child = element.firstChild;
+    const nextPage = (next) => { // reutilizo la función
         debugger
-        element.removeChild(child);
+        let pageTmp = page;
+        next ?  pageTmp++ : pageTmp--;
+        setShowPage(false);
+        setPage(pageTmp);
+        setShowPage(true)
     }
     return(
         <div> hola
            {ok && <div>
-
-               recibido
-               <button onClick={()=>nextPage()}>Activate Lasers</button>
-                <div id="showpage">{renderSites(10, sites, page)}</div>
-                {/* {sites.map((site , index) => {
-                    return (
-                        <div key={index}>
-                            <div>
-                                <img src={site.Images[0]} width="300px" heigth= "300px"alt="imagen"></img>
-                            </div>
-                            <div>
-                                <h1>{site.City}</h1>
-                                <p>{site.Address}</p>
-                                <a href={site.Link}><p>Link</p></a>
-                            </div>
-                        </div>
-                    )
-    })}  */}
-                
+               {page !== 1 && <button onClick={()=>nextPage(false)}>Prev</button>}
+               <button onClick={()=>nextPage(true)}>next</button>
+                {showPage && <div id="showpage">
+                    <div id="page">{renderSites(10, sites, page)}</div>
+                </div>}
                 </div>}
             
         </div>
