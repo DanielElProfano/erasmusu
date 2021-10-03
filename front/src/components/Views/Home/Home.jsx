@@ -10,45 +10,31 @@ const Home = () => {
     const [number, setNumber] = useState(10)
     const [ok, setOk] = useState(false);
     const [selectForm, setSelectForm] = useState('')
-
     
     useEffect(() => {
         callToApi();
     },[])
 
-
-    // const checkLocalStorage = () => {
-    //     if (localStorage.getItem("erasmusu") === null) {
-    //         callToApi()
-    //       }
-    //     else{
-    //         const local = localStorage.getItem('erasmusu');
-    //         // setOk(true)
-    //         // setSites(local)
-    //         console.log(local[3])
-    //     }
-    // }
-
-    const callToApi = async () => {
+    const callToApi = async () => { //request to api
         const data = await fetchAllData()
         let array = []
-        data.forEach((element, index) => {
+        data.forEach((element, index) => { //parse data into an Object Array
             array.push(element);
         })
-        console.log("array: ", array)
         setSites(array)
-        setOk(true)
+        console.log(array)
+        setOk(true) // all ready to render
     }
-    const orderArray = (arrayToSort, field) => {
-        debugger
-        if (typeof arrayToSort[0][field] === 'string')
+
+    const orderArray = (arrayToSort, field) => {  // order the array by field
+        if (typeof arrayToSort[0][field] === 'string') // if field content is a string
             {
                 arrayToSort.sort((x, y) => {
                 let a = x[field].toUpperCase(),
                     b = y[field].toUpperCase();
                 return a == b ? 0 : a > b ? 1 : -1;
             })
-        }else{
+        }else{  // if field content is a number
             arrayToSort.sort((x, y) => 
             {
                 return x[field] - y[field];
@@ -57,7 +43,7 @@ const Home = () => {
         setSites(arrayToSort)
     }
     
-    const renderSites = (number, sites, page) => {  //
+    const renderSites = (number, sites, page) => {  // 
         const forArray = [];
         const initialSite = (number * page) - number;
         const finalSite = number * page;
@@ -65,14 +51,15 @@ const Home = () => {
         {
             forArray.push(
             <div className="b-card" key={i}>
-                <div className="b-card">
-                    <img src={sites[i].Images[0]} width="300px" heigth= "300px"alt="imagen"></img>
+                <div >
+                    <img className="b-card__image" src={sites[i].Images[0]} alt="imagen"></img>
                 </div>
-                <div>
-                    <h2>{sites[i].Description.split('.')[0]}</h2> 
-                    <h1>{sites[i].City}</h1>
-                    <p>{sites[i].Address}</p>
-                    <a href={sites[i].Link}><p>Link</p></a>
+                <div className="b-card__description">
+                    <h3 className="b-card__text b-card__text--title">{sites[i].Description.split('.')[0]}</h3> 
+                    <p className="b-card__text b-card-text-city">{sites[i].City}</p>
+                    <p className="b-card__text">{sites[i].Price}</p>
+                    <p className="b-card__text">{sites[i].Address}</p>
+                    <a className="b-card__text b-card__text--link" href={sites[i].Link} rel="noreferrer" target="_blank"><p>Link</p></a>
                 </div>
             </div>
             )
@@ -93,9 +80,9 @@ const Home = () => {
         setPage(1);
     }
     return(
-        <div> 
+        <div className="b-home"> 
         {!ok && <p>loading...</p>}
-           {ok && <div>
+           {ok && <div className="b-home__container">
                 <form>
                     <select onChange={changeSelect} value={selectForm}>
                         <option value="">Select</option>
@@ -107,10 +94,9 @@ const Home = () => {
                {page !== 1 && <button onClick={()=>nextPage(false)}>Prev</button>} 
                <button onClick={()=>nextPage(true)}>next</button>
                 {showPage && <div id="showpage">
-                    <div id="page">{renderSites(10, sites, page)}</div>
+                    <div className="">{renderSites(5, sites, page)}</div>
                 </div>}
                 </div>}
-            
         </div>
     )
 }
